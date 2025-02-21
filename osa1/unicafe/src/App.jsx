@@ -72,6 +72,9 @@ const App = () => {
     setVotes(copy);
   };
 
+  const mostVotes = Math.max(...votes);
+  const mostVotedAnecdote = anecdotes[votes.indexOf(mostVotes)];
+
   return (
     <div>
       <h1>give feedback</h1>
@@ -86,6 +89,9 @@ const App = () => {
         onVote={handleVote}
         onNext={handleOnNext}
       />
+      <h1>Anecdote with the most votes</h1>
+      <p>{mostVotedAnecdote}</p>
+      <p>has {mostVotes} votes</p>
     </div>
   );
 };
