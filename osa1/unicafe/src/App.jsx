@@ -35,11 +35,21 @@ const Button = ({ onClick, text }) => {
   return <button onClick={onClick}>{text}</button>;
 };
 
+const Anecdote = ({ anecdote, votes, onVote, onNext }) => (
+  <div>
+    <p>{anecdote}</p>
+    <p>has {votes} votes</p>
+    <Button onClick={onVote} text="vote" />
+    <Button onClick={onNext} text="next anecdote" />
+  </div>
+);
+
 const App = () => {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
   const [selected, setSelected] = useState(0);
+  const [votes, setVotes] = useState(new Array(8).fill(0));
 
   const anecdotes = [
     "If it hurts, do it more often.",
@@ -52,6 +62,16 @@ const App = () => {
     "The only way to go fast, is to go well.",
   ];
 
+  const handleOnNext = () => {
+    setSelected(Math.floor(Math.random() * anecdotes.length));
+  };
+
+  const handleVote = () => {
+    const copy = [...votes];
+    copy[selected] += 1;
+    setVotes(copy);
+  };
+
   return (
     <div>
       <h1>give feedback</h1>
@@ -60,12 +80,11 @@ const App = () => {
       <Button onClick={() => setBad(bad + 1)} text="bad" />
       <h1>statistics</h1>
       <Statistics good={good} neutral={neutral} bad={bad} />
-      <p>{anecdotes[selected]}</p>
-      <Button
-        onClick={() =>
-          setSelected(Math.floor(Math.random() * anecdotes.length))
-        }
-        text="next anecdote"
+      <Anecdote
+        anecdote={anecdotes[selected]}
+        votes={votes[selected]}
+        onVote={handleVote}
+        onNext={handleOnNext}
       />
     </div>
   );
