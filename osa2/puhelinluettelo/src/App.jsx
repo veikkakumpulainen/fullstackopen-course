@@ -4,12 +4,14 @@ import personService from "./services/persons";
 import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Persons from "./Persons";
+import Notification from "./Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchName, setSearchName] = useState("");
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((response) => {
@@ -20,6 +22,7 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault();
     const person = persons.find((person) => person.name === newName);
+
     if (persons.some((person) => person.name === newName)) {
       if (
         window.confirm(
@@ -39,6 +42,23 @@ const App = () => {
             );
             setNewName("");
             setNewNumber("");
+            setNotification({
+              message: `Number change succeeded for ${newName}`,
+              type: "success",
+            });
+            setTimeout(() => {
+              setNotification(null);
+            }, 5000);
+          })
+          .catch((error) => {
+            setNotification({
+              message: `Information of ${newName} has already been removed from server`,
+              type: "error",
+            });
+            setTimeout(() => {
+              setNotification(null);
+            }, 5000);
+            setPersons(persons.filter((p) => p.id !== person.id));
           });
       }
       return;
@@ -55,6 +75,13 @@ const App = () => {
         setNewName("");
         setNewNumber("");
       });
+    setNotification({
+      message: `Added ${newName}`,
+      type: "success",
+    });
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
   };
 
   const handleDelete = (id) => {
@@ -64,6 +91,13 @@ const App = () => {
         setPersons(persons.filter((person) => person.id !== id));
       });
     }
+    setNotification({
+      message: `Deleted succeeded`,
+      type: "success",
+    });
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
   };
 
   const handleNameChange = (event) => {
@@ -87,6 +121,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification?.message} type={notification?.type} />
       <Filter searchName={searchName} handleSearchChange={handleSearchChange} />
       <h2>Add a new</h2>
       <PersonForm
