@@ -1,0 +1,14 @@
+ul {
+  padding: 0;
+}
+
+li {
+  list-style-type: disc;
+  margin-left: 40px;
+}
+
+img {
+  width: 200px;
+  height: 200px;
+  padding-top: 20px;
+}
