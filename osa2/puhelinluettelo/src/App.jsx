@@ -19,10 +19,31 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault();
+    const person = persons.find((person) => person.name === newName);
     if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        axios
+          .put(`http://localhost:3001/persons/${person.id}`, {
+            name: newName,
+            number: newNumber,
+          })
+          .then((response) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== response.data.id ? person : response.data
+              )
+            );
+            setNewName("");
+            setNewNumber("");
+          });
+      }
       return;
     }
+
     const personObject = {
       name: newName,
       number: newNumber,
@@ -36,18 +57,24 @@ const App = () => {
       });
   };
 
+  const handleDelete = (id) => {
+    const person = persons.find((person) => person.id === id);
+    if (window.confirm(`Delete ${person.name} ?`)) {
+      axios.delete(`http://localhost:3001/persons/${id}`).then((response) => {
+        setPersons(persons.filter((person) => person.id !== id));
+      });
+    }
+  };
+
   const handleNameChange = (event) => {
-    console.log(event.target.value);
     setNewName(event.target.value);
   };
 
   const handleNumberChange = (event) => {
-    console.log(event.target.value);
     setNewNumber(event.target.value);
   };
 
   const handleSearchChange = (event) => {
-    console.log(event.target.value);
     setSearchName(event.target.value);
   };
 
@@ -70,7 +97,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} handleDelete={handleDelete} />
     </div>
   );
 };
