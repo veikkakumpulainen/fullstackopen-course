@@ -31,7 +31,10 @@ const App = () => {
   return (
     <div>
       <Filter searchName={searchName} handleSearchChange={handleSearchChange} />
-      <CountryList filteredCountries={filteredCountries} />
+      <CountryList
+        filteredCountries={filteredCountries}
+        setSearchName={setSearchName}
+      />
     </div>
   );
 };
