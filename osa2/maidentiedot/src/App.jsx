@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Filter from "./Filter";
 import axios from "axios";
+import CountryList from "./CountryList";
 
 const App = () => {
   const [searchName, setSearchName] = useState("");
@@ -30,36 +31,7 @@ const App = () => {
   return (
     <div>
       <Filter searchName={searchName} handleSearchChange={handleSearchChange} />
-
-      <ul>
-        {filteredCountries.length > 10 ? (
-          <p>Too many matches, specify another filter</p>
-        ) : filteredCountries.length > 1 ? (
-          filteredCountries.map((country) => (
-            <li key={country.name.common}>{country.name.common}</li>
-          ))
-        ) : filteredCountries.length === 1 ? (
-          (() => {
-            const country = filteredCountries[0];
-            return (
-              <div>
-                <h1>{country.name.common}</h1>
-                <p>
-                  {`Capital ${country.capital}`} <br />
-                  {`Area ${country.area}`}
-                </p>
-                <h2>Languages</h2>
-                <ul>
-                  {Object.values(country.languages).map((language) => (
-                    <li key={language}>{language}</li>
-                  ))}
-                </ul>
-                <img src={country.flags.png} alt={country.name.common} />
-              </div>
-            );
-          })()
-        ) : null}
-      </ul>
+      <CountryList filteredCountries={filteredCountries} />
     </div>
   );
 };
