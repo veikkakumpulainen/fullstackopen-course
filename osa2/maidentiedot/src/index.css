@@ -7,8 +7,12 @@ ul {
   margin-left: 40px;
 }
 
-img {
+.flag {
   width: 200px;
   height: 200px;
   padding-top: 20px;
+}
+
+p {
+  margin: 0;
 }
