@@ -1,0 +1,13 @@
+{
+  "name": "puhelinluettelo",
+  "version": "1.0.0",
+  "description": "puhelinluettelo backendin avulla",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Veikka Kumpulainen",
+  "license": "ISC"
+}
