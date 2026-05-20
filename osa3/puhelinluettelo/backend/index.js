@@ -27,7 +27,7 @@ let persons = [
 ]
 
 app.use(express.json())
-app.use(express.static(path.join(__dirname, 'dist')))
+app.use(express.static('dist'))
 
 morgan.token('body', (request) => {
   return JSON.stringify(request.body)
@@ -35,9 +35,9 @@ morgan.token('body', (request) => {
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-// app.get('/', (request, response) => {
-//  response.send('<h1>Hello World!</h1>')
-// })
+ app.get('/', (request, response) => {
+  response.send('<h1>Hello World!</h1>')
+})
 
 app.get('/api/persons', (request, response) => {
   response.json(persons)
