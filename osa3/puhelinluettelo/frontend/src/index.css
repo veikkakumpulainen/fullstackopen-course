@@ -1,0 +1,21 @@
+.notification {
+  color: green;
+  background-color: rgb(200, 199, 199);
+  padding: 10px;
+  border: 2px solid green;
+  font-size: large;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.notification.success {
+  color: green;
+  background-color: rgb(200, 199, 199);
+  border: 2px solid green;
+}
+
+.notification.error {
+  color: red;
+  background-color: rgb(200, 199, 199);
+  border: 2px solid red;
+}
