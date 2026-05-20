@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
+const path = require('path')
 
 let persons = [
     {
@@ -26,7 +27,7 @@ let persons = [
 ]
 
 app.use(express.json())
-app.use(express.static('dist'))
+app.use(express.static(path.join(__dirname, 'dist')))
 
 morgan.token('body', (request) => {
   return JSON.stringify(request.body)
@@ -37,6 +38,10 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 // app.get('/', (request, response) => {
 //  response.send('<h1>Hello World!</h1>')
 // })
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+})
 
 app.get('/api/persons', (request, response) => {
   response.json(persons)
