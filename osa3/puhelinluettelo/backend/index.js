@@ -39,10 +39,6 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 //  response.send('<h1>Hello World!</h1>')
 // })
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'))
-})
-
 app.get('/api/persons', (request, response) => {
   response.json(persons)
 })
