@@ -3,7 +3,6 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
-// const Person = require('../mongo')
 const Person = require('./models/person')
 
 let persons = []
@@ -21,24 +20,32 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
   response.send('<h1>Hello World!</h1>')
 })
 
-app.get('/api/persons', (request, response) => {
+app.get('/api/persons', (request, response, next) => {
   Person.find({}).then(persons => {
     response.json(persons)
   })
+  .catch(error => next(error))
 })
 
-app.get('/api/persons/:id', (request, response) => {
-  Person.findById(request.params.id).then(person => {
-    response.json(person)
-  })
+app.get('/api/persons/:id', (request, response, next) => {
+  Person.findById(request.params.id)
+    .then(person => {
+      if (person) {
+        response.json(person)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
 })
 
-app.get('/info', (request, response) => {
+app.get('/info', (request, response, next) => {
   Person.countDocuments({}).then(count => {
     response.send(
       `Phonebook has info for ${count} people <br> ${new Date()}`
     )
   })
+  .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
@@ -49,7 +56,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
   if (!body.name || !body.number) {
@@ -64,12 +71,41 @@ app.post('/api/persons', (request, response) => {
   })
 
   person.save().then(savedPerson => {
-    response.json(saveedNote)
+    response.json(savedPerson)
   })
-
+  .catch(error => next(error))
 })
 
-app.use((error, request, response, next) => {
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const { name, number } = request.body
+
+  const updatedPerson = {
+    name,
+    number
+  }
+
+  Person.findByIdAndUpdate(
+    request.params.id,
+    updatedPerson,
+    { new: true, runValidators: true, context: 'query' }
+  )
+    .then(updated => {
+      if (updated) {
+        response.json(updated)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
+})
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
   if (error.name === 'CastError') {
@@ -77,7 +113,9 @@ app.use((error, request, response, next) => {
   }
 
   next(error)
-})
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
