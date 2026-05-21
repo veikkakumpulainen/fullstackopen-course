@@ -13,6 +13,7 @@
   "author": "Veikka Kumpulainen",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^17.4.2",
     "express": "^5.1.0",
     "morgan": "^1.10.1"
   }
