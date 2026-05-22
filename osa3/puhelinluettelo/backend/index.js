@@ -5,8 +5,6 @@ const app = express()
 const morgan = require('morgan')
 const Person = require('./models/person')
 
-let persons = []
-
 app.use(express.json())
 app.use(express.static('dist'))
 
@@ -16,7 +14,7 @@ morgan.token('body', (request) => {
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
- app.get('/', (request, response) => {
+app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
@@ -24,7 +22,7 @@ app.get('/api/persons', (request, response, next) => {
   Person.find({}).then(persons => {
     response.json(persons)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -45,7 +43,7 @@ app.get('/info', (request, response, next) => {
       `Phonebook has info for ${count} people <br> ${new Date()}`
     )
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
@@ -73,7 +71,7 @@ app.post('/api/persons', (request, response, next) => {
   person.save().then(savedPerson => {
     response.json(savedPerson)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
@@ -115,7 +113,7 @@ const errorHandler = (error, request, response, next) => {
   }
 
   next(error)
-} 
+}
 
 app.use(errorHandler)
 
